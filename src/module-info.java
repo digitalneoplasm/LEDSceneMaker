@@ -3,9 +3,9 @@ module LEDSceneMaker {
     requires javafx.controls;
     requires java.xml;
 
-    opens LEDMapper to javafx.fxml;
+    opens LEDSceneMaker to javafx.fxml;
 
-    exports LEDMapper;
-    exports LEDMapper.state;
-    opens LEDMapper.state to javafx.fxml;
+    exports LEDSceneMaker;
+    exports LEDSceneMaker.state;
+    opens LEDSceneMaker.state to javafx.fxml;
 }
