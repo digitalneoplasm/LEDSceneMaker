@@ -13,7 +13,6 @@
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.control.TreeView?>
-<?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.input.KeyCodeCombination?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -103,12 +102,13 @@
                <children>
                   <ScrollPane fx:id="frameListScollPane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <content>
-                        <ListView fx:id="frameList" maxWidth="1.7976931348623157E308" onMouseClicked="#selectFrame" orientation="HORIZONTAL" prefHeight="110.0" prefWidth="896.0">
+                        <ListView fx:id="frameList" maxWidth="1.7976931348623157E308" onMouseClicked="#clickFrame" orientation="HORIZONTAL" prefHeight="110.0" prefWidth="896.0">
                            <contextMenu>
                               <ContextMenu>
                                 <items>
                                   <MenuItem mnemonicParsing="false" onAction="#addFrame" text="New Frame" />
-                                    <MenuItem mnemonicParsing="false" text="Unspecified Action" />
+                                    <MenuItem fx:id="duplicateFrameMenuOption" disable="false" mnemonicParsing="false" onAction="#duplicateFrame" text="Duplicate Frame" />
+                                    <MenuItem fx:id="deleteFrameMenuOption" disable="false" mnemonicParsing="false" onAction="#deleteFrame" text="Delete Frame" />
                                 </items>
                               </ContextMenu>
                            </contextMenu>

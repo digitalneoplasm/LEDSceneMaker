@@ -1,6 +1,8 @@
 package LEDSceneMaker.state;
 
 import LEDSceneMaker.components.LED_ws2812b;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -9,7 +11,7 @@ import java.util.List;
 public class Model {
     private static Model m;
     private String pcbFilename;
-    private ArrayList<Frame> frames;
+    private ObservableList<Frame> frames;
     private Frame currentFrame;
     private List<LED_ws2812b> leds;
 
@@ -23,7 +25,7 @@ public class Model {
     public void reinitializeModel(){
         pcbFilename = "";
         leds = new ArrayList<>();
-        frames = new ArrayList<>();
+        frames = FXCollections.observableArrayList();
     }
 
     public static Model getInstance() {
@@ -31,7 +33,7 @@ public class Model {
         return m;
     }
 
-    public Frame getCurrentFrame(){
+    public Frame getCurrentFrame() {
         if (currentFrame == null) {
             this.currentFrame = new Frame(); // Initialize the frame if needed.
             frames.add(this.currentFrame);
@@ -39,8 +41,8 @@ public class Model {
         return currentFrame;
     }
 
-    public List<Frame> getFrames(){
-        return Collections.unmodifiableList(frames);
+    public ObservableList<Frame> getFrames(){
+        return frames;
     }
 
     public Frame newFrame(){
@@ -50,8 +52,17 @@ public class Model {
         return f;
     }
 
-    public void setCurrentFrame(int index){
-        currentFrame = frames.get(index);
+    // We don't want to leave the model in a bad state and trust the controller to fix it, so select another frame.
+    // By default the one after the one being removed. If there is not one there, go to before it.
+    public void deleteFrame(Frame frame){
+        int idx = frames.indexOf(frame);
+        frames.remove(frame);
+        if (idx == frames.size()) currentFrame = frames.get(idx-1);
+        else currentFrame = frames.get(idx);
+    }
+
+    public void setCurrentFrame(Frame frame){
+        currentFrame = frame;
     }
 
     public void setLEDs (List<LED_ws2812b> leds){

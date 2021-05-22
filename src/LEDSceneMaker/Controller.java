@@ -17,8 +17,10 @@ import javafx.scene.Group;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Paint;
 import javafx.scene.robot.Robot;
 import javafx.scene.shape.Circle;
 import javafx.scene.transform.Scale;
@@ -42,6 +44,8 @@ public class Controller {
     public ScrollPane frameListScollPane;
     public ToggleButton clearButton;
     public ImageView clearButtonImage;
+    public MenuItem duplicateFrameMenuOption;
+    public MenuItem deleteFrameMenuOption;
     @FXML
     MenuBar mainMenu;
     @FXML
@@ -57,7 +61,7 @@ public class Controller {
 
     Scale scaleTransform;
     Robot robot = new Robot();
-    ObservableList<Frame> frames = FXCollections.observableArrayList();
+    ObservableList<Frame> frames = Model.getInstance().getFrames();
     FileChooser fileChooser = new FileChooser();
 
     void setupControls(){
@@ -71,7 +75,7 @@ public class Controller {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        
+
         frameListScollPane.setFitToHeight(true);
         frameListScollPane.setFitToWidth(true);
         frameList.setCellFactory(p -> new ListCell<Frame>() {
@@ -114,15 +118,29 @@ public class Controller {
         return c;
     }
 
-    public Frame createNewFrame(){
+    public LEDCircle createLEDCircle(LED_ws2812b led, Paint paint){
+        LEDCircle c = new LEDCircle(2.5, paint);
+        initializeLEDCircle(c);
+        c.relocate(led.getX().doubleValue(), led.getY().doubleValue());
+        return c;
+    }
+
+    public Frame createNewFrame(boolean keepColors){
         Map<LED_ws2812b, LEDCircle> circleMap = Model.getInstance().getCurrentFrame().getCircleMap();
         Frame newFrame = Model.getInstance().newFrame();
 
         for (LED_ws2812b led : circleMap.keySet()){
-            newFrame.addCircleMapping(createLEDCircle(led), led);
+            if (keepColors)
+                newFrame.addCircleMapping(createLEDCircle(led, circleMap.get(led).getFill()), led);
+            else
+                newFrame.addCircleMapping(createLEDCircle(led), led);
         }
 
         return newFrame;
+    }
+
+    public Frame createNewFrame() {
+        return createNewFrame(false);
     }
 
     private void drawLEDs(List<LED_ws2812b> leds){
@@ -136,6 +154,7 @@ public class Controller {
     /// Frames ///
 
     private void displayFrame(Frame frame){
+        if (frame == null) return;
         drawingPane.getChildren().clear();
         for (Circle c : frame.getCircleMap().values()){
             drawingPane.getChildren().add(c);
@@ -164,6 +183,8 @@ public class Controller {
             } catch (IOException e) {
             }
         }
+
+        frameList.getSelectionModel().selectFirst();
     }
 
     @FXML
@@ -210,6 +231,7 @@ public class Controller {
                 }
             }
             displayFrame(Model.getInstance().getCurrentFrame());
+            frameList.getSelectionModel().selectFirst();
         }
     }
 
@@ -250,8 +272,10 @@ public class Controller {
     }
 
     @FXML
-    public void selectFrame(MouseEvent e){
-        displayFrame(frameList.getSelectionModel().getSelectedItem());
+    public void clickFrame(MouseEvent e){
+        Frame selectedFrame = frameList.getSelectionModel().getSelectedItem();
+        displayFrame(selectedFrame);
+        Model.getInstance().setCurrentFrame(selectedFrame);
     }
 
 
@@ -281,5 +305,20 @@ public class Controller {
         dialog.getDialogPane().getButtonTypes().add(okButtonType);
         dialog.getDialogPane().lookupButton(okButtonType).setDisable(false);
         dialog.showAndWait();
+    }
+
+    public void duplicateFrame(ActionEvent actionEvent) {
+        Frame nf = createNewFrame(true);
+        frames.add(nf);
+    }
+
+    public void deleteFrame(ActionEvent actionEvent) {
+        if (Model.getInstance().getFrames().size() == 0) return;
+        if (Model.getInstance().getFrames().size() == 1) {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Cannot delete the only frame.", ButtonType.OK);
+            alert.showAndWait();
+            return;
+        }
+        Model.getInstance().deleteFrame(frameList.getSelectionModel().getSelectedItem());
     }
 }
