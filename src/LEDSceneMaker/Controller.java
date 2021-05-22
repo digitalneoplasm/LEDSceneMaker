@@ -15,6 +15,8 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Group;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.robot.Robot;
@@ -39,6 +41,7 @@ import static LEDSceneMaker.io.PCBParser.parse;
 public class Controller {
     public ScrollPane frameListScollPane;
     public ToggleButton clearButton;
+    public ImageView clearButtonImage;
     @FXML
     MenuBar mainMenu;
     @FXML
@@ -62,6 +65,13 @@ public class Controller {
         scaleTransform = new Scale(2, 2, 0, 0);
         zoomGroup.getTransforms().add(scaleTransform);
         drawingPane.setOnDragDetected(e -> drawingPane.startFullDrag());
+
+        try {
+            clearButtonImage.setImage(new Image(getClass().getResource("/icons8-eraser-80.png").openStream()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        
         frameListScollPane.setFitToHeight(true);
         frameListScollPane.setFitToWidth(true);
         frameList.setCellFactory(p -> new ListCell<Frame>() {

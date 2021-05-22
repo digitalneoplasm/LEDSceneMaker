@@ -11,7 +11,7 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception{
         FXMLLoader fxmlLoader = new FXMLLoader();
-        Parent root = fxmlLoader.load(getClass().getResource("uiwindow.fxml").openStream());
+        Parent root = fxmlLoader.load(getClass().getResource("/uiwindow.fxml").openStream());
 
         Controller controller = fxmlLoader.getController();
         controller.setupControls();

@@ -69,10 +69,8 @@
                         <ColorPicker fx:id="colorPicker" layoutY="2.0" prefHeight="25.0" prefWidth="41.0" />
                         <ToggleButton fx:id="clearButton" layoutY="30.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="41.0">
                            <graphic>
-                              <ImageView fitHeight="19.0" fitWidth="27.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="icons8-eraser-80.png" />
-                                 </image></ImageView>
+                              <ImageView fx:id="clearButtonImage" fitHeight="19.0" fitWidth="27.0" pickOnBounds="true" preserveRatio="true">
+</ImageView>
                            </graphic>
                         </ToggleButton>
                      </children>
