@@ -8,7 +8,9 @@ import LEDSceneMaker.io.export.Export;
 import LEDSceneMaker.io.export.ExportAdafruit;
 import LEDSceneMaker.io.export.ExportFastLED;
 import LEDSceneMaker.state.Model;
+import LEDSceneMaker.state.Region;
 import LEDSceneMaker.ui.LEDCircle;
+import LEDSceneMaker.ui.RegionTreeCell;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -57,7 +59,7 @@ public class Controller {
     @FXML
     ListView<Frame> frameList;
     @FXML
-    TreeView<String> regionsTree;
+    TreeView<Region> regionsTree;
 
     Scale scaleTransform;
     Robot robot = new Robot();
@@ -92,6 +94,10 @@ public class Controller {
             }
         });
         frameList.setItems(frames);
+
+        regionsTree.setCellFactory(p -> new RegionTreeCell());
+        TreeItem<Region> root = new TreeItem<>(new Region("Regions"));
+        regionsTree.setRoot(root);
     }
 
 
