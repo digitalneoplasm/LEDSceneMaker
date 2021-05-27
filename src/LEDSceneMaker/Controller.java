@@ -33,10 +33,7 @@ import org.xml.sax.XMLReader;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.util.List;
 import java.util.Map;
 
@@ -48,6 +45,8 @@ public class Controller {
     public ImageView clearButtonImage;
     public MenuItem duplicateFrameMenuOption;
     public MenuItem deleteFrameMenuOption;
+    public MenuItem saveMenuItem;
+    public MenuItem saveAsMenuItem;
     @FXML
     MenuBar mainMenu;
     @FXML
@@ -60,6 +59,8 @@ public class Controller {
     ListView<Frame> frameList;
     @FXML
     TreeView<Region> regionsTree;
+
+    File currentProjectFile;
 
     Scale scaleTransform;
     Robot robot = new Robot();
@@ -191,19 +192,22 @@ public class Controller {
         }
 
         frameList.getSelectionModel().selectFirst();
+        regionsTree.getSelectionModel().selectFirst();
+
+        saveMenuItem.setDisable(false);
+        saveAsMenuItem.setDisable(false);
     }
 
     @FXML
     private void saveProject(ActionEvent event){
-        fileChooser.setTitle("Save Project");
-        fileChooser.getExtensionFilters().clear();
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("LED Project", "*.ledproj"));
-        File projectfile = fileChooser.showSaveDialog(mainMenu.getScene().getWindow());
-
-        if (projectfile != null) {
+        if (currentProjectFile == null) {
+            saveProjectAs(event);
+        }
+        else {
             try {
-                ProjectWriter.writeFile(projectfile.getAbsolutePath());
-            } catch (IOException ignored) {
+                ProjectWriter.writeFile(currentProjectFile.getAbsolutePath());
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
             }
         }
     }
@@ -213,9 +217,9 @@ public class Controller {
         fileChooser.setTitle("Load Project");
         fileChooser.getExtensionFilters().clear();
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Project File", "*.ledproj"));
-        File pcbfile = fileChooser.showOpenDialog(mainMenu.getScene().getWindow());
+        File projectFile = fileChooser.showOpenDialog(mainMenu.getScene().getWindow());
 
-        if (pcbfile != null) {
+        if (projectFile != null) {
             frames.clear();
 
             try {
@@ -223,7 +227,7 @@ public class Controller {
                 SAXParser saxParser = spf.newSAXParser();
                 XMLReader xmlReader = saxParser.getXMLReader();
                 xmlReader.setContentHandler(new ProjectReader());
-                xmlReader.parse(pcbfile.getAbsolutePath());
+                xmlReader.parse(projectFile.getAbsolutePath());
             } catch (IOException | SAXException | ParserConfigurationException e) {
                 e.printStackTrace();
                 return;
@@ -238,6 +242,12 @@ public class Controller {
             }
             displayFrame(Model.getInstance().getCurrentFrame());
             frameList.getSelectionModel().selectFirst();
+            regionsTree.getSelectionModel().selectFirst();
+
+            saveMenuItem.setDisable(false);
+            saveAsMenuItem.setDisable(false);
+
+            currentProjectFile = projectFile;
         }
     }
 
@@ -326,5 +336,21 @@ public class Controller {
             return;
         }
         Model.getInstance().deleteFrame(frameList.getSelectionModel().getSelectedItem());
+    }
+
+    public void saveProjectAs(ActionEvent actionEvent) {
+        fileChooser.setTitle("Save Project As");
+        fileChooser.getExtensionFilters().clear();
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("LED Project", "*.ledproj"));
+        File projectfile = fileChooser.showSaveDialog(mainMenu.getScene().getWindow());
+
+        if (projectfile != null) {
+            try {
+                ProjectWriter.writeFile(projectfile.getAbsolutePath());
+            } catch (IOException ignored) {
+            }
+        }
+
+        currentProjectFile = projectfile;
     }
 }

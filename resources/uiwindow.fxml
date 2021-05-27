@@ -8,6 +8,7 @@
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
@@ -29,13 +30,16 @@
                      <accelerator>
                         <KeyCodeCombination alt="UP" code="O" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                      </accelerator></MenuItem>
-                  <MenuItem mnemonicParsing="false" onAction="#saveProject" text="Save Project" />
+                  <SeparatorMenuItem mnemonicParsing="false" />
+                  <MenuItem fx:id="saveMenuItem" disable="true" mnemonicParsing="false" onAction="#saveProject" text="Save Project" />
+                  <MenuItem fx:id="saveAsMenuItem" disable="true" mnemonicParsing="false" onAction="#saveProjectAs" text="Save Project As" />
                   <Menu mnemonicParsing="false" text="Export...">
                     <items>
                         <MenuItem mnemonicParsing="false" onAction="#exportFastLED" text="FastLED" />
                         <MenuItem mnemonicParsing="false" onAction="#exportAdafruit" text="Adafruit" />
                     </items>
                   </Menu>
+                  <SeparatorMenuItem mnemonicParsing="false" />
               <MenuItem mnemonicParsing="false" onAction="#exitProgram" text="Exit" />
             </items>
           </Menu>
