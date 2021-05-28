@@ -11,7 +11,7 @@ import LEDSceneMaker.state.Model;
 import LEDSceneMaker.state.Region;
 import LEDSceneMaker.ui.LEDCircle;
 import LEDSceneMaker.ui.RegionTreeCell;
-import javafx.collections.FXCollections;
+
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -19,7 +19,6 @@ import javafx.scene.Group;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Paint;
@@ -27,6 +26,7 @@ import javafx.scene.robot.Robot;
 import javafx.scene.shape.Circle;
 import javafx.scene.transform.Scale;
 import javafx.stage.FileChooser;
+import LEDSceneMaker.io.PCBParser;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 
@@ -43,10 +43,14 @@ public class Controller {
     public ScrollPane frameListScollPane;
     public ToggleButton clearButton;
     public ImageView clearButtonImage;
+    public ImageView fillButtonImage;
     public MenuItem duplicateFrameMenuOption;
     public MenuItem deleteFrameMenuOption;
     public MenuItem saveMenuItem;
     public MenuItem saveAsMenuItem;
+    public ToggleButton fillButton;
+    public ToggleButton paintButton;
+    public ImageView paintButtonImage;
     @FXML
     MenuBar mainMenu;
     @FXML
@@ -75,6 +79,8 @@ public class Controller {
 
         try {
             clearButtonImage.setImage(new Image(getClass().getResource("/icons8-eraser-80.png").openStream()));
+            fillButtonImage.setImage(new Image(getClass().getResource("/icons8-fill-color-80.png").openStream()));
+            paintButtonImage.setImage(new Image(getClass().getResource("/icons8-paintbrush-96.png").openStream()));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -183,7 +189,7 @@ public class Controller {
 
         if (pcbfile != null) {
             try {
-                List<LED_ws2812b> leds = parse(pcbfile);
+                List<LED_ws2812b> leds = PCBParser.parse(pcbfile);
                 Model.getInstance().setPcbFilename(pcbfile.getAbsolutePath());
                 Model.getInstance().setLEDs(leds);
                 drawLEDs(leds);

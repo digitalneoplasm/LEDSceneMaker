@@ -1,11 +1,10 @@
 package LEDSceneMaker.ui;
 
 import LEDSceneMaker.state.Region;
-import javafx.event.EventHandler;
+
 import javafx.scene.control.TextField;
 import javafx.scene.control.TreeCell;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 
 public class RegionTreeCell extends TreeCell<Region> {
 
